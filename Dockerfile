@@ -9,4 +9,4 @@ COPY app.py .
 
 EXPOSE 5001
 
-CMD ["python", "price_server.py"]
+CMD ["python", "app.py"]
