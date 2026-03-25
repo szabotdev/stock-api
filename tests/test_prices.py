@@ -47,8 +47,8 @@ def test_prices_route_returns_quotes_for_all_tickers(client, app, monkeypatch):
 
     assert response.status_code == 200
     assert response.get_json() == {
-        "EUR/HUF": {"price": 382.5, "change": 0.66},
-        "USD/HUF": {"price": 355.0, "change": 1.43},
+        "EURHUF=X": {"label": "EUR/HUF", "price": 382.5, "change": 0.66},
+        "USDHUF=X": {"label": "USD/HUF", "price": 355.0, "change": 1.43},
     }
 
 

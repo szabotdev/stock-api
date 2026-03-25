@@ -3,9 +3,17 @@ from ..storage import load_tickers, save_tickers
 
 tickers_bp = Blueprint("tickers", __name__)
 
+DISPLAY_NAMES = {
+    "EURHUF=X": "EUR/HUF",
+    "USDHUF=X": "USD/HUF",
+}
+
+def serialize_ticker(symbol):
+    return {"symbol": symbol, "label": DISPLAY_NAMES.get(symbol, symbol)}
+
 @tickers_bp.route("/tickers", methods=["GET"])
 def get_tickers():
-    return jsonify(load_tickers())
+    return jsonify([serialize_ticker(symbol) for symbol in load_tickers()])
 
 @tickers_bp.route("/tickers", methods=["POST"])
 def add_ticker():
@@ -21,7 +29,7 @@ def add_ticker():
 
     tickers.append(symbol)
     save_tickers(tickers)
-    return jsonify({"ok": True, "tickers": tickers})
+    return jsonify({"ok": True, "tickers": [serialize_ticker(symbol) for symbol in tickers]})
 
 @tickers_bp.route("/tickers/<symbol>", methods=["DELETE"])
 def remove_ticker(symbol):
@@ -33,4 +41,4 @@ def remove_ticker(symbol):
 
     tickers.remove(symbol)
     save_tickers(tickers)
-    return jsonify({"ok": True, "tickers": tickers})
+    return jsonify({"ok": True, "tickers": [serialize_ticker(symbol) for symbol in tickers]})

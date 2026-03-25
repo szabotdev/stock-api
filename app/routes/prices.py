@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from ..storage import load_tickers
-from ..config import display_ticker
+from ..routes.tickers import serialize_ticker
 import yfinance as yf
 
 prices_bp = Blueprint("prices", __name__)
@@ -27,8 +27,11 @@ def _get_quote(symbol):
 @prices_bp.route("/prices")
 def prices():
     return jsonify({
-        display_ticker(symbol): _get_quote(symbol)
-        for symbol in load_tickers()
+        item["symbol"]: {
+            "label": item["label"],
+            **_get_quote(item["symbol"]),
+        }
+        for item in (serialize_ticker(symbol) for symbol in load_tickers())
     })
 
 @prices_bp.route("/sparkline/<symbol>")
